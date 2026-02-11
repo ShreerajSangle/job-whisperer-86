@@ -33,7 +33,7 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
       currency: job.currency || 'USD',
       maximumFractionDigits: 0,
     });
-    if (min && max) return `${formatter.format(min)} - ${formatter.format(max)}`;
+    if (min && max) return `${formatter.format(min)} – ${formatter.format(max)}`;
     if (min) return `${formatter.format(min)}+`;
     if (max) return `Up to ${formatter.format(max)}`;
     return null;
@@ -43,11 +43,11 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-xl overflow-y-auto">
-        <SheetHeader className="space-y-4 pb-6 border-b">
+      <SheetContent className="w-full sm:max-w-xl overflow-y-auto border-border/50">
+        <SheetHeader className="space-y-4 pb-5 border-b border-border/50">
           <div>
-            <SheetTitle className="text-xl">{job.company_name}</SheetTitle>
-            <p className="text-muted-foreground">{job.job_title}</p>
+            <SheetTitle className="text-lg">{job.company_name}</SheetTitle>
+            <p className="text-muted-foreground text-sm">{job.job_title}</p>
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <StatusBadge
@@ -56,23 +56,23 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
               interactive
             />
             {sourceConfig && (
-              <Badge variant="secondary" className={`${sourceConfig.bgColor} ${sourceConfig.color}`}>
+              <Badge variant="secondary" className={`${sourceConfig.bgColor} ${sourceConfig.color} border-0`}>
                 {sourceConfig.label}
               </Badge>
             )}
           </div>
         </SheetHeader>
 
-        <Tabs defaultValue="details" className="mt-6">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="details" className="mt-5">
+          <TabsList className="grid w-full grid-cols-3 bg-muted/50">
             <TabsTrigger value="details">Details</TabsTrigger>
             <TabsTrigger value="notes">Notes</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="details" className="mt-6 space-y-4">
+          <TabsContent value="details" className="mt-5 space-y-4">
             {job.job_url && (
-              <Button variant="outline" asChild className="w-full">
+              <Button variant="outline" asChild className="w-full border-border/50">
                 <a href={job.job_url} target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="mr-2 h-4 w-4" />
                   View Job Posting
@@ -85,8 +85,8 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
                 <div className="flex items-start gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium">Location</p>
-                    <p className="text-sm text-muted-foreground">{job.location}</p>
+                    <p className="text-xs font-medium text-foreground">Location</p>
+                    <p className="text-xs text-muted-foreground">{job.location}</p>
                   </div>
                 </div>
               )}
@@ -94,8 +94,8 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
                 <div className="flex items-start gap-2">
                   <DollarSign className="h-4 w-4 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium">Salary</p>
-                    <p className="text-sm text-muted-foreground">{salary}</p>
+                    <p className="text-xs font-medium text-foreground">Salary</p>
+                    <p className="text-xs text-muted-foreground">{salary}</p>
                   </div>
                 </div>
               )}
@@ -103,8 +103,8 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
                 <div className="flex items-start gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium">Applied</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs font-medium text-foreground">Applied</p>
+                    <p className="text-xs text-muted-foreground">
                       {format(new Date(job.applied_date), 'MMM d, yyyy')}
                     </p>
                   </div>
@@ -113,8 +113,8 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
               <div className="flex items-start gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium">Last Updated</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-xs font-medium text-foreground">Last Updated</p>
+                  <p className="text-xs text-muted-foreground">
                     {formatDistanceToNow(new Date(job.updated_at), { addSuffix: true })}
                   </p>
                 </div>
@@ -123,10 +123,10 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
 
             {job.tags && job.tags.length > 0 && (
               <div>
-                <p className="text-sm font-medium mb-2">Tags</p>
+                <p className="text-xs font-medium mb-2 text-foreground">Tags</p>
                 <div className="flex gap-1 flex-wrap">
                   {job.tags.map((tag) => (
-                    <Badge key={tag} variant="outline">
+                    <Badge key={tag} variant="outline" className="text-xs border-border/50 text-muted-foreground">
                       #{tag}
                     </Badge>
                   ))}
@@ -136,7 +136,7 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
 
             {job.notes && (
               <div>
-                <p className="text-sm font-medium mb-2">Initial Notes</p>
+                <p className="text-xs font-medium mb-2 text-foreground">Initial Notes</p>
                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                   {job.notes}
                 </p>
@@ -144,11 +144,11 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
             )}
           </TabsContent>
 
-          <TabsContent value="notes" className="mt-6">
+          <TabsContent value="notes" className="mt-5">
             <NotesTimeline jobId={job.id} />
           </TabsContent>
 
-          <TabsContent value="history" className="mt-6">
+          <TabsContent value="history" className="mt-5">
             <StatusHistoryTimeline jobId={job.id} />
           </TabsContent>
         </Tabs>

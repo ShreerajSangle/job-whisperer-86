@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { JobSource, SOURCE_CONFIG } from '@/types/job';
 
 interface SourceStatsChartProps {
@@ -27,28 +27,43 @@ export function SourceStatsChart({ bySource }: SourceStatsChartProps) {
   if (chartData.length === 0) return null;
 
   return (
-    <Card>
+    <Card className="border-border/50">
       <CardHeader>
-        <CardTitle className="text-lg">Applications by Source</CardTitle>
+        <CardTitle className="text-base font-medium">Applications by Source</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="name" width={100} />
+              <XAxis
+                type="number"
+                tick={{ fill: 'hsl(220, 10%, 48%)', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(225, 10%, 18%)' }}
+                tickLine={false}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={100}
+                tick={{ fill: 'hsl(220, 13%, 70%)', fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid hsl(var(--border))',
+                  backgroundColor: 'hsl(228, 13%, 12%)',
+                  border: '1px solid hsl(225, 10%, 18%)',
                   borderRadius: '8px',
+                  color: 'hsl(220, 13%, 83%)',
                 }}
               />
-              <Legend />
-              <Bar dataKey="Applied" stackId="a" fill="hsl(217, 91%, 60%)" radius={[0, 0, 0, 0]} />
-              <Bar dataKey="Interviewing" stackId="a" fill="hsl(263, 70%, 50%)" />
-              <Bar dataKey="Offered" stackId="a" fill="hsl(142, 76%, 36%)" />
-              <Bar dataKey="Accepted" stackId="a" fill="hsl(142, 71%, 45%)" radius={[0, 4, 4, 0]} />
+              <Legend
+                wrapperStyle={{ fontSize: 12, color: 'hsl(220, 10%, 48%)' }}
+              />
+              <Bar dataKey="Applied" stackId="a" fill="hsl(215, 45%, 45%)" radius={[0, 0, 0, 0]} />
+              <Bar dataKey="Interviewing" stackId="a" fill="hsl(260, 35%, 48%)" />
+              <Bar dataKey="Offered" stackId="a" fill="hsl(152, 35%, 38%)" />
+              <Bar dataKey="Accepted" stackId="a" fill="hsl(152, 40%, 45%)" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { Loader2, Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useJobNotes } from '@/hooks/useJobNotes';
-import { NoteCategory, NOTE_CATEGORY_CONFIG, JobNote } from '@/types/job';
+import { NoteCategory, NOTE_CATEGORY_CONFIG } from '@/types/job';
 import { NOTE_TEMPLATES } from '@/lib/constants';
 import {
   AlertDialog,
@@ -58,7 +58,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Add Note Form */}
       <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
@@ -66,8 +66,9 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}
+          className="resize-none"
         />
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {NOTE_TEMPLATES.map((template, index) => (
             <Button
               key={index}
@@ -75,9 +76,9 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
               variant="outline"
               size="sm"
               onClick={() => handleTemplateClick(template.text)}
-              className="text-xs"
+              className="text-xs border-border/50 text-muted-foreground hover:text-foreground"
             >
-              {template.emoji} {template.text.slice(0, 20)}...
+              {template.emoji} {template.text.slice(0, 20)}…
             </Button>
           ))}
         </div>
@@ -94,7 +95,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
               ))}
             </SelectContent>
           </Select>
-          <Button type="submit" disabled={submitting || !content.trim()}>
+          <Button type="submit" size="sm" disabled={submitting || !content.trim()}>
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Add Note
           </Button>
@@ -111,7 +112,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
             className="max-w-sm"
           />
           {searchTerm && (
-            <p className="text-sm text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-1.5">
               {filteredNotes.length} note{filteredNotes.length !== 1 ? 's' : ''} match "{searchTerm}"
             </p>
           )}
@@ -121,28 +122,28 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
       {/* Timeline */}
       {loading ? (
         <div className="flex justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       ) : filteredNotes.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">
+        <div className="text-center py-8 text-muted-foreground text-sm">
           {searchTerm ? 'No notes match your search' : 'No notes yet. Add your first note above!'}
         </div>
       ) : (
-        <div className="relative space-y-4 pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+        <div className="relative space-y-3 pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-border/50">
           {filteredNotes.map((note) => {
             const categoryConfig = NOTE_CATEGORY_CONFIG[note.category];
             return (
               <div key={note.id} className="relative">
-                <div className="absolute -left-6 top-1 h-4 w-4 rounded-full bg-background border-2 border-primary flex items-center justify-center text-xs">
+                <div className="absolute -left-6 top-1.5 h-3.5 w-3.5 rounded-full bg-card border border-border flex items-center justify-center text-[10px]">
                   {categoryConfig.icon}
                 </div>
-                <div className="bg-card border rounded-lg p-4 group">
+                <div className="bg-muted/30 border border-border/50 rounded-lg p-3 group">
                   <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge className={`${categoryConfig.bgColor} ${categoryConfig.color} text-xs`}>
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Badge className={`${categoryConfig.bgColor} ${categoryConfig.color} text-xs border-0`}>
                         {categoryConfig.label}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground/70">
                         {formatDistanceToNow(new Date(note.created_at), { addSuffix: true })}
                       </span>
                     </div>
@@ -155,7 +156,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
                       <Trash2 className="h-3 w-3 text-destructive" />
                     </Button>
                   </div>
-                  <p className="text-sm whitespace-pre-wrap">{note.content}</p>
+                  <p className="text-sm text-foreground/90 whitespace-pre-wrap">{note.content}</p>
                 </div>
               </div>
             );

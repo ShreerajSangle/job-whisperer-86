@@ -26,40 +26,40 @@ export function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <div className="container flex h-14 items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <Briefcase className="h-5 w-5" />
+          <Link to="/dashboard" className="flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <Briefcase className="h-4 w-4" />
             </div>
-            <span className="font-bold text-xl hidden sm:block">JobTracker</span>
+            <span className="font-semibold text-sm hidden sm:block text-foreground tracking-tight">JobTracker</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-1">
-            <Button variant="ghost" asChild>
+          <nav className="hidden md:flex items-center gap-0.5">
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
               <Link to="/dashboard">
-                <LayoutDashboard className="h-4 w-4 mr-2" />
+                <LayoutDashboard className="h-4 w-4 mr-1.5" />
                 Dashboard
               </Link>
             </Button>
-            <Button variant="ghost" asChild>
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
               <Link to="/insights">
-                <BarChart3 className="h-4 w-4 mr-2" />
+                <BarChart3 className="h-4 w-4 mr-1.5" />
                 Insights
               </Link>
             </Button>
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <QuickAddJobForm />
           
           {user && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                  <Avatar className="h-9 w-9">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary/15 text-primary text-xs font-medium">
                       {getInitials(user.email || '')}
                     </AvatarFallback>
                   </Avatar>
