@@ -35,13 +35,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/5 via-background to-background p-4">
-      <Card className="w-full max-w-md shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-sm border-border/50">
         <CardHeader className="space-y-3 text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-            <Briefcase className="h-7 w-7" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
+            <Briefcase className="h-6 w-6" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+          <CardTitle className="text-xl font-semibold">Welcome back</CardTitle>
           <CardDescription>Sign in to your JobTracker account</CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>

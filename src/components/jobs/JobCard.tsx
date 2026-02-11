@@ -41,7 +41,7 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
       currency: job.currency || 'USD',
       maximumFractionDigits: 0,
     });
-    if (min && max) return `${formatter.format(min)} - ${formatter.format(max)}`;
+    if (min && max) return `${formatter.format(min)} – ${formatter.format(max)}`;
     if (min) return `${formatter.format(min)}+`;
     if (max) return `Up to ${formatter.format(max)}`;
     return null;
@@ -51,34 +51,42 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
 
   return (
     <>
-      <Card className="group relative overflow-hidden transition-all hover:shadow-lg hover:border-primary/20">
+      <Card
+        className="group relative overflow-hidden transition-all duration-200 border-border/50 hover:border-border hover:bg-card/80 cursor-pointer"
+        onClick={() => onViewDetails(job)}
+      >
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0 flex-1">
-              <h3 className="font-semibold text-lg truncate">{job.company_name}</h3>
-              <p className="text-muted-foreground truncate">{job.job_title}</p>
+              <h3 className="font-semibold text-sm truncate text-foreground">{job.company_name}</h3>
+              <p className="text-muted-foreground text-sm truncate">{job.job_title}</p>
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onViewDetails(job)}>
+                <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onViewDetails(job); }}>
                   <Pencil className="mr-2 h-4 w-4" />
                   View Details
                 </DropdownMenuItem>
                 {job.job_url && (
                   <DropdownMenuItem asChild>
-                    <a href={job.job_url} target="_blank" rel="noopener noreferrer">
+                    <a href={job.job_url} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Open Job URL
                     </a>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem
-                  onClick={() => setDeleteDialogOpen(true)}
+                  onClick={(e) => { e.stopPropagation(); setDeleteDialogOpen(true); }}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
@@ -88,7 +96,7 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
             </DropdownMenu>
           </div>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center gap-2 flex-wrap">
             <StatusBadge
               status={job.status}
@@ -97,13 +105,13 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
               size="sm"
             />
             {sourceConfig && (
-              <Badge variant="secondary" className={`${sourceConfig.bgColor} ${sourceConfig.color} text-xs`}>
+              <Badge variant="secondary" className={`${sourceConfig.bgColor} ${sourceConfig.color} text-xs border-0`}>
                 {sourceConfig.label}
               </Badge>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
             {job.location && (
               <span className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
@@ -121,19 +129,19 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
           {job.tags && job.tags.length > 0 && (
             <div className="flex gap-1 flex-wrap">
               {job.tags.slice(0, 3).map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
+                <Badge key={tag} variant="outline" className="text-xs border-border/50 text-muted-foreground">
                   #{tag}
                 </Badge>
               ))}
               {job.tags.length > 3 && (
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs border-border/50 text-muted-foreground">
                   +{job.tags.length - 3}
                 </Badge>
               )}
             </div>
           )}
 
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground/70">
             Updated {formatDistanceToNow(new Date(job.updated_at), { addSuffix: true })}
           </p>
         </CardContent>
@@ -144,7 +152,7 @@ export function JobCard({ job, onStatusChange, onDelete, onViewDetails }: JobCar
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this job?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete {job.company_name} - {job.job_title} and all associated notes.
+              This will permanently delete {job.company_name} – {job.job_title} and all associated notes.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

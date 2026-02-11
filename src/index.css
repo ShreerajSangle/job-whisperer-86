@@ -1,104 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* JobTracker Design System - Professional ATS Aesthetic */
-
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 222 47% 11%;
+    /* Calm dark theme — off-black + muted blue accents */
+    --background: 228 14% 7%;
+    --foreground: 220 13% 83%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 228 13% 10%;
+    --card-foreground: 220 13% 83%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover: 228 13% 10%;
+    --popover-foreground: 220 13% 83%;
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 220 55% 55%;
+    --primary-foreground: 220 20% 96%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 225 12% 15%;
+    --secondary-foreground: 220 13% 75%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 225 12% 14%;
+    --muted-foreground: 220 10% 48%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 225 12% 16%;
+    --accent-foreground: 220 13% 83%;
 
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 50% 48%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 225 10% 16%;
+    --input: 225 10% 16%;
+    --ring: 220 55% 55%;
 
     --radius: 0.5rem;
 
-    /* Status Colors */
-    --status-saved: 215 16% 47%;
-    --status-applied: 217 91% 60%;
-    --status-interviewing: 263 70% 50%;
-    --status-offered: 142 76% 36%;
-    --status-accepted: 142 71% 45%;
-    --status-rejected: 0 84% 60%;
-    --status-withdrawn: 215 14% 34%;
+    /* Muted status colors for dark theme */
+    --status-saved: 220 10% 48%;
+    --status-applied: 215 50% 52%;
+    --status-interviewing: 260 40% 55%;
+    --status-offered: 152 40% 42%;
+    --status-accepted: 152 45% 48%;
+    --status-rejected: 0 45% 52%;
+    --status-withdrawn: 220 10% 40%;
 
-    /* Source Colors */
-    --source-linkedin: 201 100% 35%;
-    --source-indeed: 234 89% 40%;
-    --source-referral: 142 76% 36%;
-    --source-company: 263 70% 50%;
-    --source-recruiter: 43 96% 56%;
+    /* Muted source colors */
+    --source-linkedin: 201 55% 42%;
+    --source-indeed: 234 45% 48%;
+    --source-referral: 152 40% 42%;
+    --source-company: 260 40% 50%;
+    --source-recruiter: 38 50% 50%;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 221 83% 53%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 40% 96%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 221 83% 53%;
-  }
-
-  .dark {
-    --background: 222 47% 6%;
-    --foreground: 210 40% 98%;
-
-    --card: 222 47% 8%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222 47% 8%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 217 91% 60%;
-    --primary-foreground: 222 47% 6%;
-
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 217 91% 60%;
-
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217 91% 60%;
-    --sidebar-primary-foreground: 222 47% 6%;
-    --sidebar-accent: 217 33% 17%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 17%;
-    --sidebar-ring: 217 91% 60%;
+    --sidebar-background: 228 13% 10%;
+    --sidebar-foreground: 220 13% 83%;
+    --sidebar-primary: 220 55% 55%;
+    --sidebar-primary-foreground: 220 20% 96%;
+    --sidebar-accent: 225 12% 16%;
+    --sidebar-accent-foreground: 220 13% 83%;
+    --sidebar-border: 225 10% 16%;
+    --sidebar-ring: 220 55% 55%;
   }
 }
 
@@ -107,36 +69,39 @@
     @apply border-border;
   }
 
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/80 backdrop-blur-xl border border-white/20;
-  }
-  
-  .glass-dark {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10;
+    @apply bg-card/80 backdrop-blur-xl border border-border;
   }
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar — subtle dark */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-muted/50;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-muted-foreground/20 rounded-full;
+  background: hsl(220 10% 22%);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-muted-foreground/30;
+  background: hsl(220 10% 30%);
 }

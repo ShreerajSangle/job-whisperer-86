@@ -11,20 +11,20 @@ export function SourceInsights({ bestSource, worstSource }: SourceInsightsProps)
   if (!bestSource && !worstSource) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {bestSource && (
-        <Card className="border-emerald-200 bg-emerald-50/50 dark:border-emerald-800 dark:bg-emerald-900/20">
+        <Card className="border-[hsl(152,20%,18%)] bg-[hsl(152,15%,9%)]">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-sm font-medium text-emerald-700 dark:text-emerald-300">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium text-[hsl(152,40%,55%)]">
               <TrendingUp className="h-4 w-4" />
               Best Performer
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-semibold text-emerald-800 dark:text-emerald-200">
+            <p className="font-semibold text-[hsl(152,35%,70%)]">
               {SOURCE_CONFIG[bestSource.source].label}: {bestSource.rate.toFixed(0)}% success rate
             </p>
-            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
+            <p className="text-sm text-[hsl(152,20%,45%)] mt-1">
               Focus on more {SOURCE_CONFIG[bestSource.source].label.toLowerCase()} applications!
             </p>
           </CardContent>
@@ -32,18 +32,18 @@ export function SourceInsights({ bestSource, worstSource }: SourceInsightsProps)
       )}
 
       {worstSource && worstSource.source !== bestSource?.source && (
-        <Card className="border-amber-200 bg-amber-50/50 dark:border-amber-800 dark:bg-amber-900/20">
+        <Card className="border-[hsl(38,20%,18%)] bg-[hsl(38,15%,9%)]">
           <CardHeader className="pb-2">
-            <CardTitle className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-300">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium text-[hsl(38,40%,55%)]">
               <AlertTriangle className="h-4 w-4" />
               Needs Attention
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-semibold text-amber-800 dark:text-amber-200">
+            <p className="font-semibold text-[hsl(38,35%,70%)]">
               {SOURCE_CONFIG[worstSource.source].label}: {worstSource.rate.toFixed(0)}% success rate
             </p>
-            <p className="text-sm text-amber-600 dark:text-amber-400 mt-1">
+            <p className="text-sm text-[hsl(38,20%,45%)] mt-1">
               Consider trying different platforms
             </p>
           </CardContent>
