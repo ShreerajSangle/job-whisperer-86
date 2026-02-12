@@ -18,6 +18,7 @@ export interface Job {
   applied_date?: string | null;
   deadline_date?: string | null;
   notes?: string | null;
+  job_description?: string | null;
   tags?: string[];
   created_at: string;
   updated_at: string;

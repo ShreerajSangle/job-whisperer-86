@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { StatusBadge } from './StatusBadge';
 import { NotesTimeline } from './NotesTimeline';
 import { StatusHistoryTimeline } from './StatusHistoryTimeline';
+import { useJobDocuments } from '@/hooks/useJobDocuments';
 import {
   ExternalLink,
   MapPin,
@@ -24,11 +25,16 @@ import {
   Upload,
   FileText,
   Download,
+  Trash2,
   Building2,
   Briefcase,
   ChevronDown,
   ChevronUp,
+  Loader2,
+  Save,
 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 interface JobDetailSheetProps {
   job: Job | null;
@@ -39,7 +45,20 @@ interface JobDetailSheetProps {
 
 export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobDetailSheetProps) {
   const [showHistory, setShowHistory] = useState(false);
+  const [description, setDescription] = useState('');
+  const [descriptionDirty, setDescriptionDirty] = useState(false);
+  const [savingDescription, setSavingDescription] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { documents, uploading, uploadDocument, downloadDocument, deleteDocument } = useJobDocuments(job?.id || '');
+
+  // Sync description when job changes
+  const [lastJobId, setLastJobId] = useState<string | null>(null);
+  if (job && job.id !== lastJobId) {
+    setLastJobId(job.id);
+    setDescription(job.job_description || '');
+    setDescriptionDirty(false);
+    setShowHistory(false);
+  }
 
   if (!job) return null;
 
@@ -59,7 +78,38 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
   };
 
   const salary = formatSalary(job.salary_min, job.salary_max);
-  const statusConfig = STATUS_CONFIG[job.status];
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    await uploadDocument(file, 'resume');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleSaveDescription = async () => {
+    setSavingDescription(true);
+    const { error } = await supabase
+      .from('jobs')
+      .update({ job_description: description } as any)
+      .eq('id', job.id);
+
+    if (error) {
+      toast({ title: 'Error saving description', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Description saved' });
+      setDescriptionDirty(false);
+    }
+    setSavingDescription(false);
+  };
+
+  const formatFileSize = (bytes?: number | null) => {
+    if (!bytes) return '';
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+
+  const resumes = documents.filter(d => d.document_type === 'resume');
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -171,33 +221,96 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
             <Label className="text-xs uppercase tracking-wider text-muted-foreground/70 font-medium">
               Resume
             </Label>
+
+            {/* Existing resumes */}
+            {resumes.length > 0 && (
+              <div className="space-y-2">
+                {resumes.map((doc) => (
+                  <div key={doc.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                    <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-foreground truncate">{doc.file_name}</p>
+                      <p className="text-[11px] text-muted-foreground/60">{formatFileSize(doc.file_size)}</p>
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={() => downloadDocument(doc)}>
+                      <Download className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 text-destructive/70 hover:text-destructive" onClick={() => deleteDocument(doc)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Upload area */}
             <div className="rounded-lg border border-dashed border-border/50 bg-muted/20 p-4">
               <div className="flex flex-col items-center text-center gap-2">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/60">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">
-                    Upload a resume for this application
-                  </p>
-                </div>
+                <p className="text-xs text-muted-foreground">
+                  Upload a resume for this application
+                </p>
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept=".pdf,.doc,.docx"
                   className="hidden"
+                  onChange={handleFileUpload}
                 />
                 <Button
                   variant="outline"
                   size="sm"
                   className="mt-1 text-xs border-border/40 bg-muted/30 hover:bg-muted/50"
                   onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
                 >
-                  <Upload className="mr-1.5 h-3.5 w-3.5" />
-                  Choose File
+                  {uploading ? (
+                    <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Upload className="mr-1.5 h-3.5 w-3.5" />
+                  )}
+                  {uploading ? 'Uploading...' : 'Choose File'}
                 </Button>
               </div>
             </div>
+          </section>
+
+          <Separator className="bg-border/30" />
+
+          {/* Job Description */}
+          <section className="space-y-2.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs uppercase tracking-wider text-muted-foreground/70 font-medium">
+                Job Description
+              </Label>
+              {descriptionDirty && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 text-xs text-primary hover:text-primary"
+                  onClick={handleSaveDescription}
+                  disabled={savingDescription}
+                >
+                  {savingDescription ? (
+                    <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Save className="mr-1 h-3 w-3" />
+                  )}
+                  Save
+                </Button>
+              )}
+            </div>
+            <Textarea
+              value={description}
+              onChange={(e) => {
+                setDescription(e.target.value);
+                setDescriptionDirty(true);
+              }}
+              placeholder="Paste or type the job description here..."
+              className="min-h-[120px] bg-muted/20 border-border/40 text-sm placeholder:text-muted-foreground/40 resize-y"
+            />
           </section>
 
           <Separator className="bg-border/30" />
@@ -226,14 +339,12 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
             <Label className="text-xs uppercase tracking-wider text-muted-foreground/70 font-medium">
               Notes
             </Label>
-            {job.notes ? (
+            {job.notes && (
               <div className="rounded-lg bg-muted/30 p-3">
                 <p className="text-sm text-foreground/80 whitespace-pre-wrap leading-relaxed">
                   {job.notes}
                 </p>
               </div>
-            ) : (
-              <p className="text-xs text-muted-foreground/60 italic">No notes added yet</p>
             )}
             <NotesTimeline jobId={job.id} />
           </section>
