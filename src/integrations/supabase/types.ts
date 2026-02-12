@@ -142,6 +142,7 @@ export type Database = {
           currency: string | null
           deadline_date: string | null
           id: string
+          job_description: string | null
           job_title: string
           job_url: string | null
           location: string | null
@@ -161,6 +162,7 @@ export type Database = {
           currency?: string | null
           deadline_date?: string | null
           id?: string
+          job_description?: string | null
           job_title: string
           job_url?: string | null
           location?: string | null
@@ -180,6 +182,7 @@ export type Database = {
           currency?: string | null
           deadline_date?: string | null
           id?: string
+          job_description?: string | null
           job_title?: string
           job_url?: string | null
           location?: string | null
