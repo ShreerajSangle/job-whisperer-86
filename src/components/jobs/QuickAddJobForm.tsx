@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Plus, Command, Loader2 } from 'lucide-react';
+import { Plus, Command, Loader2, Upload, FileText, X } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -39,6 +39,7 @@ const jobSchema = z.object({
   salary_min: z.coerce.number().optional().nullable(),
   salary_max: z.coerce.number().optional().nullable(),
   applied_date: z.string().optional(),
+  job_description: z.string().max(10000).optional(),
   notes: z.string().max(2000).optional(),
 });
 
@@ -52,6 +53,8 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
   const [open, setOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { createJob } = useJobs();
 
   const {
@@ -94,8 +97,31 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
       salary_min: data.salary_min || undefined,
       salary_max: data.salary_max || undefined,
       applied_date: data.applied_date || undefined,
+      job_description: data.job_description || undefined,
       notes: data.notes || undefined,
     });
+
+    // Upload resume if file selected and job created
+    if (!result.error && result.data && resumeFile) {
+      const { supabase } = await import('@/integrations/supabase/client');
+      const filePath = `${result.data.user_id}/${result.data.id}/${Date.now()}_${resumeFile.name}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('job-documents')
+        .upload(filePath, resumeFile);
+
+      if (!uploadError) {
+        await supabase.from('job_documents').insert({
+          job_id: result.data.id,
+          user_id: result.data.user_id,
+          file_name: resumeFile.name,
+          file_path: filePath,
+          file_size: resumeFile.size,
+          document_type: 'resume' as const,
+          is_primary: true,
+        });
+      }
+    }
 
     setLoading(false);
 
@@ -103,6 +129,7 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
       setOpen(false);
       reset();
       setShowMore(false);
+      setResumeFile(null);
     }
   };
 
@@ -235,6 +262,68 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
                   id="applied_date"
                   type="date"
                   {...register('applied_date')}
+                />
+              </div>
+
+              {/* Resume Upload */}
+              <div className="space-y-2">
+                <Label>Resume</Label>
+                {resumeFile ? (
+                  <div className="flex items-center gap-3 p-2.5 rounded-lg bg-muted/30 border border-border/30">
+                    <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <span className="text-sm text-foreground truncate flex-1">{resumeFile.name}</span>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 shrink-0 text-muted-foreground hover:text-destructive"
+                      onClick={() => setResumeFile(null)}
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-border/50 bg-muted/20 p-4">
+                    <div className="flex flex-col items-center text-center gap-2">
+                      <FileText className="h-5 w-5 text-muted-foreground/60" />
+                      <p className="text-xs text-muted-foreground">
+                        Attach a resume for this application
+                      </p>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) setResumeFile(file);
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs border-border/40 bg-muted/30 hover:bg-muted/50"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Upload className="mr-1.5 h-3.5 w-3.5" />
+                        Choose File
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Job Description */}
+              <div className="space-y-2">
+                <Label htmlFor="job_description">Job Description</Label>
+                <Textarea
+                  id="job_description"
+                  placeholder="Paste or type the job description..."
+                  {...register('job_description')}
+                  rows={4}
+                  className="bg-muted/20 border-border/40 text-sm placeholder:text-muted-foreground/40 resize-y"
                 />
               </div>
 
