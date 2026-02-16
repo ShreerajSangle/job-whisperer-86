@@ -86,6 +86,7 @@ export function useJobs() {
     salary_min?: number;
     salary_max?: number;
     applied_date?: string;
+    job_description?: string;
     notes?: string;
     tags?: string[];
   }) => {
