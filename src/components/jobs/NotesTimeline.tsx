@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Trash2 } from 'lucide-react';
+import { Loader2, Trash2, MessageSquare, Phone, Mail, Star, Bell, StickyNote } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useJobNotes } from '@/hooks/useJobNotes';
 import { NoteCategory, NOTE_CATEGORY_CONFIG } from '@/types/job';
@@ -25,6 +25,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+
+const CATEGORY_ICONS: Record<NoteCategory, React.ReactNode> = {
+  general:  <StickyNote className="h-2.5 w-2.5" />,
+  call:     <Phone className="h-2.5 w-2.5" />,
+  email:    <Mail className="h-2.5 w-2.5" />,
+  feedback: <Star className="h-2.5 w-2.5" />,
+  reminder: <Bell className="h-2.5 w-2.5" />,
+};
+
+const TEMPLATE_LABELS = [
+  'Recruiter called, next round is {round}',
+  'Sent follow-up email asking about timeline',
+  'Received feedback: {feedback}',
+  'Remember to check on this application',
+  'Glassdoor reviews mention {concern}',
+];
 
 interface NotesTimelineProps {
   jobId: string;
@@ -41,16 +57,11 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim()) return;
-
     setSubmitting(true);
     await createNote(content.trim(), category);
     setContent('');
     setCategory('general');
     setSubmitting(false);
-  };
-
-  const handleTemplateClick = (template: string) => {
-    setContent(template);
   };
 
   const filteredNotes = notes.filter((note) =>
@@ -66,31 +77,34 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={3}
-          className="resize-none"
+          className="resize-none bg-muted/20 border-border/40 text-sm placeholder:text-muted-foreground/40 focus-visible:ring-1"
         />
         <div className="flex flex-wrap gap-1.5">
-          {NOTE_TEMPLATES.map((template, index) => (
+          {TEMPLATE_LABELS.map((label, index) => (
             <Button
               key={index}
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => handleTemplateClick(template.text)}
+              onClick={() => setContent(label)}
               className="text-xs border-border/50 text-muted-foreground hover:text-foreground"
             >
-              {template.emoji} {template.text.slice(0, 20)}…
+              {label.slice(0, 24)}…
             </Button>
           ))}
         </div>
         <div className="flex items-center gap-2">
           <Select value={category} onValueChange={(v) => setCategory(v as NoteCategory)}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-32 bg-muted/20 border-border/40">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(NOTE_CATEGORY_CONFIG).map(([key, config]) => (
                 <SelectItem key={key} value={key}>
-                  {config.icon} {config.label}
+                  <span className="flex items-center gap-1.5">
+                    {CATEGORY_ICONS[key as NoteCategory]}
+                    {config.label}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -109,7 +123,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
             placeholder="Search notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-sm"
+            className="max-w-sm bg-muted/20 border-border/40 text-sm focus-visible:ring-1"
           />
           {searchTerm && (
             <p className="text-xs text-muted-foreground mt-1.5">
@@ -126,7 +140,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
         </div>
       ) : filteredNotes.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground text-sm">
-          {searchTerm ? 'No notes match your search' : 'No notes yet. Add your first note above!'}
+          {searchTerm ? 'No notes match your search' : 'No notes yet. Add your first note above.'}
         </div>
       ) : (
         <div className="relative space-y-3 pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-px before:bg-border/50">
@@ -134,8 +148,8 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
             const categoryConfig = NOTE_CATEGORY_CONFIG[note.category];
             return (
               <div key={note.id} className="relative">
-                <div className="absolute -left-6 top-1.5 h-3.5 w-3.5 rounded-full bg-card border border-border flex items-center justify-center text-[10px]">
-                  {categoryConfig.icon}
+                <div className="absolute -left-6 top-1.5 h-3.5 w-3.5 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground">
+                  {CATEGORY_ICONS[note.category]}
                 </div>
                 <div className="bg-muted/30 border border-border/50 rounded-lg p-3 group">
                   <div className="flex items-start justify-between gap-2">
@@ -156,7 +170,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
                       <Trash2 className="h-3 w-3 text-destructive" />
                     </Button>
                   </div>
-                  <p className="text-sm text-foreground/90 whitespace-pre-wrap">{note.content}</p>
+                  <p className="text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed">{note.content}</p>
                 </div>
               </div>
             );
@@ -164,7 +178,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
         </div>
       )}
 
-      <AlertDialog open={!!deleteNoteId} onOpenChange={() => setDeleteNoteId(null)}>
+      <AlertDialog open={!!deleteNoteId} onOpenChange={(open) => { if (!open) setDeleteNoteId(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this note?</AlertDialogTitle>
@@ -177,7 +191,7 @@ export function NotesTimeline({ jobId }: NotesTimelineProps) {
                 if (deleteNoteId) deleteNote(deleteNoteId);
                 setDeleteNoteId(null);
               }}
-              className="bg-destructive text-destructive-foreground"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete
             </AlertDialogAction>
