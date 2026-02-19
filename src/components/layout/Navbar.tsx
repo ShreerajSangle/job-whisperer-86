@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { QuickAddJobForm } from '@/components/jobs/QuickAddJobForm';
 import { useAuth } from '@/hooks/useAuth';
-import { Briefcase, LogOut, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { Briefcase, LogOut, LayoutDashboard, BarChart3, Columns } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +46,12 @@ export function Navbar() {
               <Link to="/insights">
                 <BarChart3 className="h-4 w-4 mr-1.5" />
                 Insights
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
+              <Link to="/kanban">
+                <Columns className="h-4 w-4 mr-1.5" />
+                Kanban
               </Link>
             </Button>
           </nav>

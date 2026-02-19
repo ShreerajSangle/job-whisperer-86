@@ -155,7 +155,7 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[520px] p-0 gap-0 overflow-hidden flex flex-col max-h-[90vh]">
+      <DialogContent className="sm:max-w-[520px] p-0 gap-0 overflow-hidden flex flex-col max-h-[90vh]" aria-describedby={undefined}>
         {/* Header — fixed */}
         <DialogHeader className="px-6 pt-6 pb-5 border-b border-border/30 shrink-0">
           <div className="flex items-center gap-3">
@@ -228,13 +228,10 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
                   <SelectTrigger className="bg-muted/20 border-border/40 focus:ring-1">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                <SelectContent>
                     {Object.entries(STATUS_CONFIG).map(([key, config]) => (
                       <SelectItem key={key} value={key}>
-                        <span className="flex items-center gap-2">
-                          <span>{config.icon}</span>
-                          <span>{config.label}</span>
-                        </span>
+                        {config.label}
                       </SelectItem>
                     ))}
                   </SelectContent>

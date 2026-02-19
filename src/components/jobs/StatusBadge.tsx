@@ -29,7 +29,6 @@ export function StatusBadge({ status, onStatusChange, interactive = false, size 
       `}
       variant="outline"
     >
-      <span className="mr-1">{config.icon}</span>
       {config.label}
       {interactive && validTransitions.length > 0 && (
         <ChevronDown className="ml-1 h-3 w-3" />
@@ -46,24 +45,21 @@ export function StatusBadge({ status, onStatusChange, interactive = false, size 
       <DropdownMenuTrigger asChild>
         {badge}
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent align="start" className="w-44">
         {validTransitions.map((nextStatus) => {
           const nextConfig = STATUS_CONFIG[nextStatus];
           return (
             <DropdownMenuItem
               key={nextStatus}
               onClick={() => onStatusChange(nextStatus)}
-              className="cursor-pointer"
+              className="cursor-pointer text-sm"
             >
-              <span className="mr-2">{nextConfig.icon}</span>
-              <span>{nextConfig.label}</span>
+              {nextConfig.label}
             </DropdownMenuItem>
           );
         })}
         {validTransitions.length === 0 && (
-          <DropdownMenuItem disabled>
-            No transitions available
-          </DropdownMenuItem>
+          <DropdownMenuItem disabled>No transitions available</DropdownMenuItem>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
