@@ -1,8 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { QuickAddJobForm } from '@/components/jobs/QuickAddJobForm';
 import { useAuth } from '@/hooks/useAuth';
-import { Briefcase, LogOut, LayoutDashboard, BarChart3, Columns } from 'lucide-react';
+import { Briefcase, LogOut, LayoutDashboard, BarChart3 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 export function Navbar() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,22 +37,30 @@ export function Navbar() {
             <span className="font-semibold text-sm hidden sm:block text-foreground tracking-tight">JobTracker</span>
           </Link>
           <nav className="hidden md:flex items-center gap-0.5">
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className={location.pathname === '/dashboard'
+                ? 'text-foreground bg-muted/50'
+                : 'text-muted-foreground hover:text-foreground'}
+            >
               <Link to="/dashboard">
                 <LayoutDashboard className="h-4 w-4 mr-1.5" />
                 Dashboard
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className={location.pathname === '/insights'
+                ? 'text-foreground bg-muted/50'
+                : 'text-muted-foreground hover:text-foreground'}
+            >
               <Link to="/insights">
                 <BarChart3 className="h-4 w-4 mr-1.5" />
                 Insights
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild className="text-muted-foreground hover:text-foreground">
-              <Link to="/kanban">
-                <Columns className="h-4 w-4 mr-1.5" />
-                Kanban
               </Link>
             </Button>
           </nav>
