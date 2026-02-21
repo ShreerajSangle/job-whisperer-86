@@ -245,8 +245,8 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
       </DialogTrigger>
 
       <DialogContent
-        className="sm:max-w-[500px] p-0 gap-0 flex flex-col overflow-hidden"
-        style={{ maxHeight: '88vh' }}
+        className="sm:max-w-[500px] p-0 gap-0 flex flex-col"
+        style={{ maxHeight: '85vh', height: 'auto', overflow: 'hidden' }}
         aria-describedby={undefined}
       >
         {/* ── Fixed header ──────────────────────────────────────────────── */}
@@ -267,8 +267,8 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
         {/* ── Scrollable body ───────────────────────────────────────────── */}
         <div
           ref={formBodyRef}
-          className="flex-1 min-h-0 overflow-y-auto overscroll-contain"
-          style={{ scrollBehavior: 'smooth' }}
+          className="flex-1 overflow-y-auto overscroll-contain"
+          style={{ minHeight: 0, maxHeight: 'calc(85vh - 140px)' }}
         >
           <form id="add-job-form" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div className="px-6 py-5 space-y-5">
