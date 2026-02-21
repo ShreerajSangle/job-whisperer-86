@@ -113,7 +113,7 @@ export function JobDetailSheet({ job, open, onOpenChange, onStatusChange }: JobD
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-border/40 bg-card p-0">
+      <SheetContent className="w-full sm:max-w-lg overflow-y-auto border-border/40 bg-card p-0" aria-describedby={undefined}>
         {/* Header */}
         <SheetHeader className="px-6 pt-6 pb-5 border-b border-border/30">
           <div className="flex items-start gap-3">
