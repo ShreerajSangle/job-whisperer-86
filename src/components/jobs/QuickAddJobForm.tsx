@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -101,7 +101,7 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
     resolver: zodResolver(jobSchema),
     mode: 'onTouched',
     defaultValues: {
-      status:       'saved',
+      status:       'applied',
       applied_date: new Date().toISOString().split('T')[0],
     },
   });
@@ -216,7 +216,7 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
   // ── success overlay ──────────────────────────────────────────────────────
   if (success) {
     return (
-      <Dialog open={open} onOpenChange={handleClose}>
+      <Dialog open={open} onOpenChange={(v) => v ? setOpen(true) : handleClose()}>
         <DialogTrigger asChild>
           {trigger || <DefaultTrigger />}
         </DialogTrigger>
@@ -239,7 +239,7 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={(v) => v ? setOpen(true) : handleClose()}>
       <DialogTrigger asChild>
         {trigger || <DefaultTrigger />}
       </DialogTrigger>
@@ -576,14 +576,15 @@ export function QuickAddJobForm({ trigger }: QuickAddJobFormProps) {
   );
 }
 
-function DefaultTrigger() {
-  return (
-    <Button className="gap-2">
+const DefaultTrigger = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof Button>>(
+  (props, ref) => (
+    <Button ref={ref} className="gap-2" {...props}>
       <Plus className="h-4 w-4" />
       Add Job
       <kbd className="pointer-events-none hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-xs font-medium opacity-100 sm:flex">
         <Command className="h-3 w-3" />K
       </kbd>
     </Button>
-  );
-}
+  )
+);
+DefaultTrigger.displayName = 'DefaultTrigger';
